@@ -44,6 +44,20 @@ eventos à plataforma com o seu layout já definido e documentado.
 
     -   Execute \'python main.py\' para simular o fluxo.
 
+    ## Solução
+
+    **Nota:** Esta implementação utiliza a ferramenta `pipenv` para realizar o gerenciamento das 
+    dependências do projeto de maneira consistente.
+    
+    * Para testar esta solução, reproduza os comandos abaixo:
+
+        * Instale pipenv e suas depedências: `$ pip install pipenv`
+        * Clone este repositório: `$ git clone git@github.com:gPass0s/data-challenge.git`
+        * Acesse a pasta raiz do projeto: `$ cd data-challange`
+        * Inicialize o ambiente virtual: `$ pipenv install && pipenv shell`
+        * Rode o fluxo: `$ pipenv run python desafios/exercicio1/main.py`
+
+
 2.  É muito comum que os usuários da plataforma queiram fazer análises
     exploratória nos eventos armazenados na plataforma de dados. Você
     teve a ideia de construir um módulo que automatiza a criação de
