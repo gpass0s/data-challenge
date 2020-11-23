@@ -9,6 +9,7 @@ verify_ssl = true
 moto = "==1.3.16"
 boto3 = "==1.16.7"
 python-json-logger = "*"
+desafios = {editable = true,path = "."}
 
 [requires]
 python_version = "3.7"
