@@ -5,8 +5,7 @@ Created on Sat Nov 21 17:21 BRT 2020
 Last modified on Mon Nov 23 00:31 BRT 2020
 author: guilherme passos | github: @gpass0s
 
-This module validates a document schema under the given schema. It thorws an error whenever
-the validation fails
+Validates a document under the given schema. It raises an exeception whenever validation fails
 """
 
 from jsonschema_validator import _checkers
