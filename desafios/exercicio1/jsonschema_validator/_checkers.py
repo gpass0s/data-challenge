@@ -2,7 +2,7 @@
 # -*- encoding: utf-8 -*-
 """
 Created on Sun Nov 22 09:03 BRT 2020
-Last modified on Sun Nov 22 20:51 BRT 2020
+Last modified on Mon Nov 23 08:13 BRT 2020
 author: guilherme passos | github: @gpass0s
 
 This module implements the json schema checkers which are functions to the corresponding field
@@ -26,7 +26,7 @@ def schema(schema):
 
 def type(validator, types, document, schema):
     """
-    This method verifies if the given schema format correspond to the json-schema.org draft07
+    This method verifies if document property values have the specified type
     """
     if isinstance(types, str):
         types = [types]
@@ -39,7 +39,7 @@ def type(validator, types, document, schema):
 
 def required(validator, required, document, schema):
     """
-    This method verifies if the given schema format correspond to the json-schema.org draft07
+    This method checks if document has all required fields in its properties
     """
     if not validator.check_type(document, "object"):
         return
@@ -50,14 +50,14 @@ def required(validator, required, document, schema):
 
 def properties(validator, properties, document, schema):
     """
-    This method verifies if the given schema format correspond to the json-schema.org draft07
+    This method verifies all document properties
     """
     if not validator.check_type(document, "object"):
         return
 
     for field in document.keys():
         if field not in schema["properties"]:
-            raise ValidationError(f"'{field}' is not an allowed field")
+            raise ValidationError(f"Field '{field}' is not allowed")
 
     for field, subschema in properties.items():
         if field in document:
