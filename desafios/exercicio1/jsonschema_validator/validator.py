@@ -2,7 +2,7 @@
 # -*- encoding: utf-8 -*-
 """
 Created on Sat Nov 21 17:21 BRT 2020
-Last modified on Sat Nov 21 17:21 BRT 2020
+Last modified on Mon Nov 23 00:31 BRT 2020
 author: guilherme passos | github: @gpass0s
 
 This module validates a document schema under the given schema. It thorws an error whenever
@@ -80,9 +80,8 @@ _DEFAULT_SCHEMA = {
     },
 }
 
-_EXCEPTED_SCHEMA_FORMAT = _DEFAULT_SCHEMA["$schema"]
-
 _CHECKERS_MAPPING = {
+    "schema": _checkers.schema,
     "required": _checkers.required,
     "type": _checkers.type,
     "properties": _checkers.properties,
@@ -102,6 +101,11 @@ class Validator:
     """
     Implements a validator object to perform validation
     """
+
+    def check_schema(self, schema):
+        schema_checker = _CHECKERS_MAPPING["schema"]
+        schema_checker(schema)
+
     def check_document(self, document, schema):
         for key, value in schema.items():
             checker = _CHECKERS_MAPPING.get(key)
@@ -111,24 +115,11 @@ class Validator:
             checker(self, value, document, schema)
 
     def check_type(self, value, expected_type):
-
         pytype = _TYPES_MAPPING.get(expected_type)
         return isinstance(value, pytype)
 
     def check_nested_fields(self, document, schema):
-
         self.check_document(document, schema)
-
-
-def check_schema(schema):
-    """
-    This method verifies if the given schema format correspond to the json-schema.org draft07
-    """
-    if schema.get("$schema") != _EXCEPTED_SCHEMA_FORMAT:
-        raise TypeError(
-            f"""The given schema does not match the expected format. Check the expected format at
-        {_EXCEPTED_SCHEMA_FORMAT}"""
-        )
 
 
 def validate(document, validator, schema=None):
@@ -141,13 +132,12 @@ def validate(document, validator, schema=None):
         schema: The schema to validate
 
     Raises:
-        ValueError or TypeError if the document or schema is not valid
+        JsonSchemaError or ValidationError when validation fails
     """
-
     if schema is None:
         schema = _DEFAULT_SCHEMA
 
-    check_schema(schema)
+    validator.check_schema(schema)
     validator.check_document(document, schema)
 
 
