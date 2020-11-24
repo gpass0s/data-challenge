@@ -8,7 +8,7 @@ author: guilherme passos | github: @gpass0s
 This module implements the json schema checkers which are functions to the corresponding field
 """
 
-from jsonschema_validator.exceptions import JsonSchemaError, ValidationError
+from desafios.exercicio1.jsonschema_validator.exceptions import JsonSchemaError, ValidationError
 
 _EXCEPTED_SCHEMA_FORMAT = "http://json-schema.org/draft-07/schema"
 
