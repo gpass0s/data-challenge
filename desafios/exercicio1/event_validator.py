@@ -40,3 +40,5 @@ def handler(event, schema=None):
         send_event_to_queue(event, _QUEUE_NAME)
     except (ValidationError, JsonSchemaError) as error:
         logger.error(msg=error.message)
+    except FileNotFoundError as errorr:
+        logger.error(msg="Json schema not found")
