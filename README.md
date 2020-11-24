@@ -46,16 +46,15 @@ eventos à plataforma com o seu layout já definido e documentado.
 
     ## Solução
 
-    **Nota:** Esta implementação utiliza a ferramenta `pipenv` para realizar o gerenciamento das 
-    dependências do projeto de maneira consistente.
-    
-    * Para testar esta solução, reproduza os comandos abaixo:
+    **Esta solução utiliza a ferramenta `pipenv` para realizar o gerenciamento das 
+    dependências do projeto de maneira consistente. Para testá-la, 
+    reproduza os comandos abaixo:**
 
-        * Instale pipenv e suas depedências: `$ pip install pipenv`
-        * Clone este repositório: `$ git clone git@github.com:gPass0s/data-challenge.git`
-        * Acesse a pasta raiz do projeto: `$ cd data-challange`
-        * Inicialize o ambiente virtual: `$ pipenv install && pipenv shell`
-        * Rode o fluxo: `$ pipenv run python desafios/exercicio1/main.py`
+    1. Instale pipenv e suas depedências: `$ pip install pipenv`
+    2. Clone este repositório: `$ git clone git@github.com:gPass0s/data-challenge.git`
+    3. Acesse a pasta raiz do projeto: `$ cd data-challange`
+    4. Inicialize o ambiente virtual: `$ pipenv install && pipenv shell`
+    5. Execute o fluxo: `$ pipenv run python desafios/exercicio1/main.py`
 
 
 2.  É muito comum que os usuários da plataforma queiram fazer análises
@@ -77,6 +76,13 @@ eventos à plataforma com o seu layout já definido e documentado.
         (<https://docs.aws.amazon.com/athena/latest/ug/create-table.html>)
 
     -   Execute \'python main.py\' para simular.
+
+    ## Solução
+
+    **Assim como a solução anterior, esta utiliza a ferramenta `pipenv`. Deste
+    modo, a partir do item 4 da implementação anterior, rode o seguinte comando:**
+
+    1. Execute o fluxo: `$ pipenv run python desafios/exercicio2/main.py`
 
 3.  O projeto vingou! A área de negócio identificou muitas oportunidades
     nos dados disponibilizados. Você ficou responsável por propor um
