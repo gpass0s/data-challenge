@@ -55,6 +55,7 @@ eventos à plataforma com o seu layout já definido e documentado.
     3. Acesse a pasta raiz do projeto: `$ cd data-challange`
     4. Inicialize o ambiente virtual: `$ pipenv install && pipenv shell`
     5. Simule o fluxo: `$ pipenv run python desafios/exercicio1/main.py`
+    6. Execute os testes unitários: `$ pipenv run python -m pytest -vv tests/`
 
 
 2.  É muito comum que os usuários da plataforma queiram fazer análises
