@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "7a58e53bdb88ee6d4945338e0cc2bfa36d463826e7a2c7725055b6ccd88a105b"
+            "sha256": "2621d2f38d89edda3b0847bc60a00ed0de821f56755e99ca2392508d56330cfd"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -155,6 +155,10 @@
                 "sha256:e3a62f0520172440ca0dcc823749319382e377f37f140a0b99ef45fecb84bfe7"
             ],
             "version": "==4.4.2"
+        },
+        "desafios": {
+            "editable": true,
+            "path": "."
         },
         "docker": {
             "hashes": [
