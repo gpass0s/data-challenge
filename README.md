@@ -100,3 +100,7 @@ eventos à plataforma com o seu layout já definido e documentado.
     -   Soluções de armazenamento
 
     -   Catálogo de Dados
+
+    ## Solução
+
+    ![Figura 1](img/solution.png)
