@@ -65,7 +65,6 @@ def validate(document, validator, schema=None):
     Raises:
         JsonSchemaError or ValidationError when validation fails
     """
- 
     if schema is None:
         with open(f"{Path(__file__).parent}/../schema.json") as file:
             schema = json.load(file)
