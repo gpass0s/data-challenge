@@ -44,7 +44,7 @@ eventos à plataforma com o seu layout já definido e documentado.
 
     -   Execute \'python main.py\' para simular o fluxo.
 
-    ## Solução
+    # Solução
 
     **Esta solução utiliza a ferramenta `pipenv` para realizar o gerenciamento das 
     dependências do projeto de maneira consistente. Para testá-la, 
@@ -55,8 +55,29 @@ eventos à plataforma com o seu layout já definido e documentado.
     3. Acesse a pasta raiz do projeto: `$ cd data-challange`
     4. Inicialize o ambiente virtual: `$ pipenv install && pipenv shell`
     5. Simule o fluxo: `$ pipenv run python desafios/exercicio1/main.py`
-    6. Execute os testes unitários: `$ pipenv run python -m pytest -vv tests/`
+        ```bash
+        ~/data-challenge$ pipenv run python desafios/exercicio1/main.py
+        Response status code: [200]
+        ```
 
+    6. Execute os testes unitários: `$ pipenv run python -m pytest -vv tests/`
+        ```bash
+        ~/data-challenge$ pipenv run python -m pytest -vv tests/
+        ======================================== test session starts =======================================
+        platform linux -- Python 3.7.5, pytest-6.1.2, py-1.9.0, pluggy-0.13.1 -- ~/.local/share/virtualenvs/data-challenge-rWrlkCEa/bin/python
+        cachedir: .pytest_cache
+        rootdir: ~/data-challenge
+        collected 6 items
+
+        tests/test__checkers.py::test_schema PASSED                                                 [ 16%]
+        tests/test__checkers.py::test_type PASSED                                                   [ 33%]
+        tests/test__checkers.py::test_required PASSED                                               [ 50%]
+        tests/test__checkers.py::test_properties_fail PASSED                                        [ 66%]
+        tests/test__checkers.py::test_properties_pass PASSED                                        [ 83%]
+        tests/test__checkers.py::test_event_type PASSED                                             [100%]
+
+        ======================================== 6 passed in 0.03s =======================================
+        ```
 
 2.  É muito comum que os usuários da plataforma queiram fazer análises
     exploratória nos eventos armazenados na plataforma de dados. Você
@@ -78,12 +99,32 @@ eventos à plataforma com o seu layout já definido e documentado.
 
     -   Execute \'python main.py\' para simular.
 
-    ## Solução
+    # Solução
 
     **Assim como a solução anterior, esta utiliza a ferramenta `pipenv`. Deste
     modo, a partir do item IV da implementação anterior, execute o seguinte comando:**
 
     1. Simule o fluxo: `$ pipenv run python desafios/exercicio2/main.py`
+        ``` bash
+        ~/data-challenge$ pipenv run python desafios/exercicio2/main.py
+            Query: CREATE EXTERNAL TABLE IF NOT EXISTS data-challange.events (
+            eid STRING,
+            documentNumber STRING,
+            name STRING,
+            age INTEGER,
+            address STRUCT <
+                street:STRING,
+                number:INTEGER,
+                mailAddress:BOOLEAN,
+                >
+            )
+            ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.RegexSerDe'
+            WITH SERDEPROPERTIES (
+            'input.regex' = '^(?!#)([^ ]+)\s+([^ ]+)\s+([^ ]+)\s+([^ ]+)\s+([^ ]+)\s+([^ ]+)\s+([^ ]+)\s+([^ ]+)\s+([^ ]+)\s+([^ ]+)\s+[^\(]+[\(]([^\;]+).*\%20([^\/]+)[\/](.*)$'
+            )
+            LOCATION 's3://iti-query-results/';
+        ```
+
 
 3.  O projeto vingou! A área de negócio identificou muitas oportunidades
     nos dados disponibilizados. Você ficou responsável por propor um
@@ -101,6 +142,30 @@ eventos à plataforma com o seu layout já definido e documentado.
 
     -   Catálogo de Dados
 
-    ## Solução
+    # Solução
 
     ![Figura 1](img/solution.png)
+    
+    **Notas sobre a arquitetura apresentada acima:**
+
+    1. Para a ingestão dos dados, sugere-se a utilização do Kinesis Data Stream. O KDS permite que os eventos
+    sejam lidos mais de uma vez dentro da janela de tempo de retenção, permitindo assim que vários consumidores
+    recebam os dados enviados pelos produtores de informações. Em outras palavras, o KDS implementa um
+    PUB/SUB de dados.
+    
+    2. A validação do esquema do eventos enviados é realizada pelo AWS Glue Schema Registry.
+    De acordo com sua <a href=https://docs.aws.amazon.com/glue/latest/dg/schema-registry.html>documentação</a>, o AWS Glue Schema Registry é capaz de realizar a validação e o controle do fluxo de um stream de dados usando esquemas Apache Avro. Além disso, é possível integrar o AWS Glue Schema Registry com o Kinesis Data Streams conforme descrito <a href=https://docs.aws.amazon.com/glue/latest/dg/schema-registry-integrations.html#schema-registry-integrations-kds>nesta</a> documentação da AWS.
+    
+    3. Após a validação dos eventos, uma função lambda é "trigada" automaticamente pelo KDS para realizar
+    a leitura, processamento e armazenamento particionado do stream de eventos no S3.
+    
+    4. O S3, ao receber o stream de eventos, notifica automaticamente uma segunda lambda function que
+    verifica se uma nova partição de dados foi criada no bucket para um determinado minuto, hora ou dia. Essa verificação é realizada por meio de uma tabela no DynamoDB que registra o momento em que o primeiro
+    evento é armazenado num determinado minuto, hora ou dia. Para o primeiro evento armazenado numa determinada
+    partição do S3, a função lambda executa o comando `MSCK REPAIR TABLE` no athena para que essa nova
+    partição esteja disponível para consulta no Athena.
+    
+    5. De maneira programática, o Glue Crawler é utilizado para executar o escaneamento dos dados armazenados
+    no S3 e atualização do repositório de metadados do Glue Catalog que será tulizados pelo Athena.
+
+    6. Por fim, os eventos ficam disponivéis para realização de consultas SQL no AWS Athena.
