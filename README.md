@@ -62,21 +62,21 @@ eventos à plataforma com o seu layout já definido e documentado.
 
     6. Execute os testes unitários: `$ pipenv run python -m pytest -vv tests/`
         ```bash
-        ~/data-challenge$ pipenv run python -m pytest -vv tests/
-        ======================================== test session starts =======================================
-        platform linux -- Python 3.7.5, pytest-6.1.2, py-1.9.0, pluggy-0.13.1 -- ~/.local/share/virtualenvs/data-challenge-rWrlkCEa/bin/python
+        ~/projects/data-challenge$ pipenv run python -m pytest -vv tests/
+        ============================================================================= test session starts ==============================================================================
+        platform linux -- Python 3.7.2, pytest-6.1.2, py-1.9.0, pluggy-0.13.1 -- /home/guilhermepassos/.local/share/virtualenvs/data-challenge-PTcfleLB/bin/python
         cachedir: .pytest_cache
-        rootdir: ~/data-challenge
-        collected 6 items
+        rootdir: /home/guilhermepassos/projects/data-challenge
+        collected 6 items                                                                                                                                                              
 
-        tests/test__checkers.py::test_schema PASSED                                                 [ 16%]
-        tests/test__checkers.py::test_type PASSED                                                   [ 33%]
-        tests/test__checkers.py::test_required PASSED                                               [ 50%]
-        tests/test__checkers.py::test_properties_fail PASSED                                        [ 66%]
-        tests/test__checkers.py::test_properties_pass PASSED                                        [ 83%]
-        tests/test__checkers.py::test_event_type PASSED                                             [100%]
+        tests/test__checkers.py::test_schema PASSED                                                                                                                              [ 16%]
+        tests/test__checkers.py::test_type PASSED                                                                                                                                [ 33%]
+        tests/test__checkers.py::test_required PASSED                                                                                                                            [ 50%]
+        tests/test__checkers.py::test_properties_fail PASSED                                                                                                                     [ 66%]
+        tests/test__checkers.py::test_properties_pass PASSED                                                                                                                     [ 83%]
+        tests/test__checkers.py::test_event_type PASSED                                                                                                                          [100%]
 
-        ======================================== 6 passed in 0.03s =======================================
+        ============================================================================== 6 passed in 0.03s ===============================================================================
         ```
 
 2.  É muito comum que os usuários da plataforma queiram fazer análises
@@ -106,23 +106,23 @@ eventos à plataforma com o seu layout já definido e documentado.
 
     1. Simule o fluxo: `$ pipenv run python desafios/exercicio2/main.py`
         ``` bash
-        ~/data-challenge$ pipenv run python desafios/exercicio2/main.py
-            Query: CREATE EXTERNAL TABLE IF NOT EXISTS data-challange.events (
-            eid STRING,
-            documentNumber STRING,
-            name STRING,
-            age INTEGER,
-            address STRUCT <
-                street:STRING,
-                number:INTEGER,
-                mailAddress:BOOLEAN,
-                >
-            )
-            ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.RegexSerDe'
-            WITH SERDEPROPERTIES (
-            'input.regex' = '^(?!#)([^ ]+)\s+([^ ]+)\s+([^ ]+)\s+([^ ]+)\s+([^ ]+)\s+([^ ]+)\s+([^ ]+)\s+([^ ]+)\s+([^ ]+)\s+([^ ]+)\s+[^\(]+[\(]([^\;]+).*\%20([^\/]+)[\/](.*)$'
-            )
-            LOCATION 's3://iti-query-results/';
+        ~/projects/data-challenge$ pipenv run python desafios/exercicio2/main.py
+        Query: CREATE EXTERNAL TABLE IF NOT EXISTS data-challange.events (
+        eid STRING,
+        documentNumber STRING,
+        name STRING,
+        age INTEGER,
+        address STRUCT <
+            street:STRING,
+            number:INTEGER,
+            mailAddress:BOOLEAN,
+            >
+        )
+        ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.RegexSerDe'
+        WITH SERDEPROPERTIES (
+        'input.regex' = '^(?!#)([^ ]+)\s+([^ ]+)\s+([^ ]+)\s+([^ ]+)\s+([^ ]+)\s+([^ ]+)\s+([^ ]+)\s+([^ ]+)\s+([^ ]+)\s+([^ ]+)\s+[^\(]+[\(]([^\;]+).*\%20([^\/]+)[\/](.*)$'
+        )
+        LOCATION 's3://iti-query-results/';
         ```
 
 
@@ -163,7 +163,7 @@ eventos à plataforma com o seu layout já definido e documentado.
     verifica se uma nova partição de dados foi criada no bucket para um determinado minuto, hora ou dia. Essa verificação é realizada por meio de uma tabela no DynamoDB que registra o momento em que o primeiro
     evento é armazenado num determinado minuto, hora ou dia. Para o primeiro evento armazenado numa determinada
     partição do S3, a função lambda executa o comando `MSCK REPAIR TABLE` no athena para que essa nova
-    partição esteja disponível para consulta no Athena.
+    partição esteja disponível para consulta.
     
     5. De maneira programática, o Glue Crawler é utilizado para executar o escaneamento dos dados armazenados
     no S3 e atualização do repositório de metadados do Glue Catalog que será tulizados pelo Athena.
