@@ -1,4 +1,5 @@
 from jsonschema2athena.generator import generate_query
+from desafios.exercicio1.logger import logger
 
 _ATHENA_CLIENT = None
 
@@ -32,12 +33,15 @@ def handler(
     Utilize a função create_hive_table_with_athena para te auxiliar
         na criação da tabela HIVE, não é necessário alterá-la
     """
-    query = generate_query(
-        database=database,
-        table=table,
-        schema=schema,
-        location=location,
-        serde=serde,
-        serdeproperties=serdeproperties,
-    )
-    create_hive_table_with_athena(query)
+    try:
+        query = generate_query(
+            database=database,
+            table=table,
+            schema=schema,
+            location=location,
+            serde=serde,
+            serdeproperties=serdeproperties,
+        )
+        create_hive_table_with_athena(query)
+    except FileNotFoundError as errorr:
+        logger.error(msg="Json schema not found")
