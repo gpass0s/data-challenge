@@ -166,6 +166,6 @@ eventos à plataforma com o seu layout já definido e documentado.
     partição esteja disponível para consulta.
     
     5. De maneira programática, o Glue Crawler é utilizado para executar o escaneamento dos dados armazenados
-    no S3 e atualização do repositório de metadados do Glue Catalog que será tulizados pelo Athena.
+    no S3 e atualização das tabelas do Glue Catalog que são consultadas no Athena.
 
     6. Por fim, os eventos ficam disponivéis para realização de consultas SQL no AWS Athena.
