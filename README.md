@@ -1,171 +1,138 @@
 # data-challenge
 
-Este teste é composto por três exercícios. Nos exercícios 1 e 2 você
-será avaliado pela qualidade, otimização e eficiência do código e, no
-exercício 3, pelo desenho de arquitetura. Faça um fork desse projeto e
-salve seu desenvolvimento nele, pois é no seu repositório que faremos
-a avaliação.
+This challenge is composed of three exercises. In exercises 1 and 2, you will be evaluated based on code quality, optimization, and efficiency; in exercise 3, on your architecture design skills. Fork this project and save your work there, as we will review your submission in your own repository.
 
-Uma empresa de tecnologia está iniciando sua jornada em dados. Em um
-primeiro momento decidiram investir na criação de um MVP de uma
-plataforma de dados, utilizando serviços da AWS (Fig. 1), para validar o
-seu potencial. Atenta às boas práticas na construção de plataformas como
-essa, a empresa adotou desde o início o princípio de analytics by
-design: todos os produtores de informações se adaptaram para enviar
-eventos à plataforma com o seu layout já definido e documentado.
+A tech company is beginning its data journey. As a first step, they decided to invest in creating an MVP of a data platform using AWS services (see Fig. 1) to validate its potential. Following best practices in platform development, the company adopted the principle of *analytics by design* from the beginning: all data producers have adapted to send events to the platform using a predefined and documented layout.
 
-![Figura 1](img/mvp.png)
+![Figure 1](img/mvp.png)
 
+---
 
-1.  O seu time ficou responsável pela construção desse fluxo de ingestão
-    de dados e você pelo módulo de Data Quality deste fluxo. Este módulo
-    vai escutar uma fila, validar os eventos trafegados nela a partir de
-    JSONs Schemas armazenados em um repositório, e enviar para uma outra
-    fila (valid-events-queue).\
-    \
-    Construa esse módulo em python a partir dos arquivos
-    disponibilizados para você na pasta "exercicio1". Você pode ficar à
-    vontade para propor melhorias, mas fique atento aos pontos a seguir:
+### 1. Your team was tasked with building this data ingestion flow, and **you** are responsible for the **Data Quality module** of this flow. This module should listen to a queue, validate the events transported through it using JSON Schemas stored in a repository, and forward them to another queue (`valid-events-queue`).
 
-    -   Use o JSON Schema disponibilizado na pasta do exercício
-        (schema.json) para validar o evento, sem o auxílio de
-        bibliotecas externas de validação, e garantindo que:
+Build this module in Python using the files provided in the `exercicio1` folder. You may propose improvements, but be mindful of the following:
 
-        i.  Tipo do campo do evento deve bater com o do schema.
+- Use the JSON Schema in the exercise folder (`schema.json`) to validate the event, **without** using external validation libraries. Ensure:
+  - The data types of fields match what's in the schema.
+  - Fields not defined in the schema are **not** accepted.
 
-        ii. Não deve aceitar campos não cadastrados no schema.
+- The output event must be **identical** to the input event.
 
-    -   Evento de saída deve ser igual ao de entrada.
+- Develop your code in the `event_validator.py` file. The `handler` function in this file is the one that gets triggered when a new event arrives in the queue. Use the `send_event_to_queue` function to send validated events.
 
-    -   Desenvolva seu código no arquivo "event_validator.py". É a
-        função "handler" deste arquivo que será estimulada sempre que um
-        novo evento cair na fila e utilize a função
-        "send_event_to_queue" para enviar eventos.
+- Run `python main.py` to simulate the flow.
 
-    -   Execute \'python main.py\' para simular o fluxo.
+#### ✅ Solution
 
-    # Solução
+**This solution uses the `pipenv` tool for consistent dependency management. To test it, follow these commands:**
 
-    **Esta solução utiliza a ferramenta `pipenv` para realizar o gerenciamento das 
-    dependências do projeto de maneira consistente. Para testá-la, 
-    reproduza os comandos abaixo:**
+1. Install pipenv and dependencies:  
+   `$ pip install pipenv`
 
-    1. Instale pipenv e suas depedências: `$ pip install pipenv`
-    2. Clone este repositório: `$ git clone git@github.com:gPass0s/data-challenge.git`
-    3. Acesse a pasta raiz do projeto: `$ cd data-challange`
-    4. Inicialize o ambiente virtual: `$ pipenv install && pipenv shell`
-    5. Simule o fluxo: `$ pipenv run python desafios/exercicio1/main.py`
-        ```bash
-        ~/data-challenge$ pipenv run python desafios/exercicio1/main.py
-        Response status code: [200]
-        ```
+2. Clone this repository:  
+   `$ git clone git@github.com:gPass0s/data-challenge.git`
 
-    6. Execute os testes unitários: `$ pipenv run python -m pytest -vv tests/`
-        ```bash
-        ~/projects/data-challenge$ pipenv run python -m pytest -vv tests/
-        ============================================================================= test session starts ==============================================================================
-        platform linux -- Python 3.7.2, pytest-6.1.2, py-1.9.0, pluggy-0.13.1 -- /home/guilhermepassos/.local/share/virtualenvs/data-challenge-PTcfleLB/bin/python
-        cachedir: .pytest_cache
-        rootdir: /home/guilhermepassos/projects/data-challenge
-        collected 6 items                                                                                                                                                              
+3. Enter the project root:  
+   `$ cd data-challange`
 
-        tests/test__checkers.py::test_schema PASSED                                                                                                                              [ 16%]
-        tests/test__checkers.py::test_type PASSED                                                                                                                                [ 33%]
-        tests/test__checkers.py::test_required PASSED                                                                                                                            [ 50%]
-        tests/test__checkers.py::test_properties_fail PASSED                                                                                                                     [ 66%]
-        tests/test__checkers.py::test_properties_pass PASSED                                                                                                                     [ 83%]
-        tests/test__checkers.py::test_event_type PASSED                                                                                                                          [100%]
+4. Initialize the virtual environment:  
+   `$ pipenv install && pipenv shell`
 
-        ============================================================================== 6 passed in 0.03s ===============================================================================
-        ```
+5. Simulate the flow:  
+   `$ pipenv run python desafios/exercicio1/main.py`
 
-2.  É muito comum que os usuários da plataforma queiram fazer análises
-    exploratória nos eventos armazenados na plataforma de dados. Você
-    teve a ideia de construir um módulo que automatiza a criação de
-    tabelas no AWS Athena a partir do mesmo JSON Schema utilizado no
-    módulo de Data Quality.\
-    \
-    Construa esse módulo em python a partir dos arquivos
-    disponibilizados para você na pasta "exercicio2" e garanta que ele
-    crie queries de create table com todos os campos e tipos declarados
-    no schema. Fique atento aos seguintes pontos:
+   Example output:
+   ```bash
+   ~/data-challenge$ pipenv run python desafios/exercicio1/main.py
+   Response status code: [200]
+   ```
 
-    -   Utilize o arquivo "json_schema_to_hive.py" para desenvolver seu
-        código e a função "create_hive_table_with_athena" para criação
-        da tabela.
+6. Run the unit tests:  
+   `$ pipenv run python -m pytest -vv tests/`
 
-    -   Consulte a documentação de CREATE TABLE no Athena
-        (<https://docs.aws.amazon.com/athena/latest/ug/create-table.html>)
+   Example output:
+   ```bash
+   ~/projects/data-challenge$ pipenv run python -m pytest -vv tests/
+   ============================================================================= test session starts ==============================================================================
+   platform linux -- Python 3.7.2, pytest-6.1.2, py-1.9.0, pluggy-0.13.1 -- /home/guilhermepassos/.local/share/virtualenvs/data-challenge-PTcfleLB/bin/python
+   cachedir: .pytest_cache
+   rootdir: /home/guilhermepassos/projects/data-challenge
+   collected 6 items
 
-    -   Execute \'python main.py\' para simular.
+   tests/test__checkers.py::test_schema PASSED                                                              [ 16%]
+   tests/test__checkers.py::test_type PASSED                                                                [ 33%]
+   tests/test__checkers.py::test_required PASSED                                                            [ 50%]
+   tests/test__checkers.py::test_properties_fail PASSED                                                     [ 66%]
+   tests/test__checkers.py::test_properties_pass PASSED                                                     [ 83%]
+   tests/test__checkers.py::test_event_type PASSED                                                          [100%]
 
-    # Solução
+   ============================================================================== 6 passed in 0.03s ===============================================================================
+   ```
 
-    **Assim como a solução anterior, esta utiliza a ferramenta `pipenv`. Deste
-    modo, a partir do item IV da implementação anterior, execute o seguinte comando:**
+---
 
-    1. Simule o fluxo: `$ pipenv run python desafios/exercicio2/main.py`
-        ``` bash
-        ~/projects/data-challenge$ pipenv run python desafios/exercicio2/main.py
-        Query: CREATE EXTERNAL TABLE IF NOT EXISTS data-challange.events (
-        eid STRING,
-        documentNumber STRING,
-        name STRING,
-        age INTEGER,
-        address STRUCT <
-            street:STRING,
-            number:INTEGER,
-            mailAddress:BOOLEAN,
-            >
-        )
-        ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.RegexSerDe'
-        WITH SERDEPROPERTIES (
-        'input.regex' = '^(?!#)([^ ]+)\s+([^ ]+)\s+([^ ]+)\s+([^ ]+)\s+([^ ]+)\s+([^ ]+)\s+([^ ]+)\s+([^ ]+)\s+([^ ]+)\s+([^ ]+)\s+[^\(]+[\(]([^\;]+).*\%20([^\/]+)[\/](.*)$'
-        )
-        LOCATION 's3://iti-query-results/';
-        ```
+### 2. It is very common for platform users to want to perform exploratory analysis on the events stored in the data platform. You had the idea of building a module that **automates the creation of tables in AWS Athena** using the same JSON Schema from the Data Quality module.
 
+Build this module in Python using the files provided in the `exercicio2` folder, and ensure it generates `CREATE TABLE` queries including all fields and data types from the schema. Consider the following:
 
-3.  O projeto vingou! A área de negócio identificou muitas oportunidades
-    nos dados disponibilizados. Você ficou responsável por propor um
-    desenho de arquitetura, não exaustivo, de uma plataforma de dados.
-    Não se prenda na solução feita no MVP, essa plataforma pode ser
-    construída usando tanto serviços de provedores cloud como soluções
-    open-source. Use o Draw.io, se quiser, e se atente ao seguintes
-    requisitos:
+- Use the `json_schema_to_hive.py` file to develop your code, and the `create_hive_table_with_athena` function to create the table.
 
-    -   Solução de ingestão
+- Refer to the Athena `CREATE TABLE` documentation:  
+  https://docs.aws.amazon.com/athena/latest/ug/create-table.html
 
-    -   Pipeline etl
+- Run `python main.py` to simulate the process.
 
-    -   Soluções de armazenamento
+#### ✅ Solution
 
-    -   Catálogo de Dados
+**Just like the previous solution, this one also uses `pipenv`. From step IV of the previous setup, execute the following:**
 
-    # Solução
+1. Simulate the flow:  
+   `$ pipenv run python desafios/exercicio2/main.py`
 
-    ![Figura 1](img/solution.png)
-    
-    **Notas sobre a arquitetura apresentada acima:**
+   Example output:
+   ```bash
+   ~/projects/data-challenge$ pipenv run python desafios/exercicio2/main.py
+   Query: CREATE EXTERNAL TABLE IF NOT EXISTS data-challange.events (
+   eid STRING,
+   documentNumber STRING,
+   name STRING,
+   age INTEGER,
+   address STRUCT <
+       street:STRING,
+       number:INTEGER,
+       mailAddress:BOOLEAN,
+       >
+   )
+   ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.RegexSerDe'
+   WITH SERDEPROPERTIES (
+   'input.regex' = '^(?!#)([^ ]+)\s+([^ ]+)\s+([^ ]+)\s+([^ ]+)\s+([^ ]+)\s+([^ ]+)\s+([^ ]+)\s+([^ ]+)\s+([^ ]+)\s+([^ ]+)\s+[^\(]+[\(]([^\;]+).*\%20([^\/]+)[\/](.*)$'
+   )
+   LOCATION 's3://iti-query-results/';
+   ```
 
-    1. Para a ingestão dos dados, sugere-se a utilização do Kinesis Data Stream. O KDS permite que os eventos
-    sejam lidos mais de uma vez dentro da janela de tempo de retenção, permitindo assim que vários consumidores
-    recebam os dados enviados pelos produtores de informações. Em outras palavras, o KDS implementa um
-    PUB/SUB de dados.
-    
-    2. A validação do esquema do eventos enviados é realizada pelo AWS Glue Schema Registry.
-    De acordo com sua <a href=https://docs.aws.amazon.com/glue/latest/dg/schema-registry.html>documentação</a>, o AWS Glue Schema Registry é capaz de realizar a validação e o controle do fluxo de um stream de dados usando esquemas Apache Avro. Além disso, é possível integrar o AWS Glue Schema Registry com o Kinesis Data Streams conforme descrito <a href=https://docs.aws.amazon.com/glue/latest/dg/schema-registry-integrations.html#schema-registry-integrations-kds>nesta</a> documentação da AWS.
-    
-    3. Após a validação dos eventos, uma função lambda é "trigada" automaticamente pelo KDS para realizar
-    a leitura, processamento e armazenamento particionado do stream de eventos no S3.
-    
-    4. O S3, ao receber o stream de eventos, notifica automaticamente uma segunda lambda function que
-    verifica se uma nova partição de dados foi criada no bucket para um determinado minuto, hora ou dia. Essa verificação é realizada por meio de uma tabela no DynamoDB que registra o momento em que o primeiro
-    evento é armazenado num determinado minuto, hora ou dia. Para o primeiro evento armazenado numa determinada
-    partição do S3, a função lambda executa o comando `MSCK REPAIR TABLE` no athena para que essa nova
-    partição esteja disponível para consulta.
-    
-    5. De maneira programática, o Glue Crawler é utilizado para executar o escaneamento dos dados armazenados
-    no S3 e atualização das tabelas do Glue Catalog que são consultadas no Athena.
+---
 
-    6. Por fim, os eventos ficam disponivéis para realização de consultas SQL no AWS Athena.
+### 3. The MVP succeeded! The business team identified many opportunities in the available data. You’ve now been tasked with proposing a **non-exhaustive architectural design** for a data platform. Don’t feel restricted by the MVP solution; you may use both cloud services and open-source solutions. Use Draw.io if you like, and ensure you meet the following requirements:
+
+- Data ingestion solution  
+- ETL pipeline  
+- Storage solutions  
+- Data catalog  
+
+#### ✅ Solution
+
+![Figure 1](img/solution.png)
+
+**Notes on the architecture above:**
+
+1. For data ingestion, we suggest using **Kinesis Data Streams (KDS)**. KDS allows events to be read multiple times during the retention window, enabling multiple consumers to access the same data. In other words, KDS implements a data **pub/sub** system.
+
+2. Event schema validation is done using **AWS Glue Schema Registry**. According to its [documentation](https://docs.aws.amazon.com/glue/latest/dg/schema-registry.html), it supports validation and stream flow control using Apache Avro schemas and integrates with KDS as described [here](https://docs.aws.amazon.com/glue/latest/dg/schema-registry-integrations.html#schema-registry-integrations-kds).
+
+3. Once validated, events trigger a **Lambda function** that processes and stores the events in a **partitioned structure on S3**.
+
+4. Upon writing to S3, another Lambda is triggered. It checks whether a new partition (by minute, hour, or day) was created by consulting a **DynamoDB table** that tracks the first arrival timestamp for each period. If it’s the first event in a new partition, the Lambda runs `MSCK REPAIR TABLE` in Athena to expose the partition for querying.
+
+5. **Glue Crawlers** are used programmatically to scan S3 data and update the **Glue Catalog**, which Athena queries.
+
+6. Finally, events are available for **SQL querying via AWS Athena**.
